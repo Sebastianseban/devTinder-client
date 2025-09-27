@@ -3,14 +3,11 @@ import LiquidEther from "../components/home/LiquidEther";
 import { FaUsers, FaBolt, FaHandshake } from "react-icons/fa";
 import FeatureCard from "../components/home/FeatureCard";
 import SectionOne from "../components/home/SectionOne";
-
-
+import HowItWorksSection from "../components/home/HowItWorksStep";
 
 const HomePage = () => (
-  <div
-    className="w-full h-screen relative overflow-auto bg-gradient-to-br from-[#1F1F47] via-[#5227FF] to-[#FF80DF]"
-  >
-    <LiquidEther
+  <div className="w-full h-screen relative overflow-auto bg-gradient-to-br from-[#1F1F47] via-[#5227FF] to-[#FF80DF]">
+    {/* <LiquidEther
       colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
       mouseForce={20}
       cursorSize={100}
@@ -26,7 +23,7 @@ const HomePage = () => (
       takeoverDuration={0.25}
       autoResumeDelay={3000}
       autoRampDuration={0.6}
-    />
+    /> */}
 
     <div className="absolute inset-0 h-full flex flex-col items-center justify-center z-10 px-4">
       <h1 className="text-white mt-56 text-4xl md:text-6xl font-bold drop-shadow-2xl mb-1 text-center">
@@ -36,7 +33,9 @@ const HomePage = () => (
         Build. Collaborate. Grow.
       </h2>
       <p className="text-white/80 text-lg md:text-xl font-medium text-center mb-4 max-w-2xl">
-        Find your next project partner or collaborator within our community of developers.<br />
+        Find your next project partner or collaborator within our community of
+        developers.
+        <br />
         Start building something amazing today.
       </p>
 
@@ -55,17 +54,11 @@ const HomePage = () => (
           I have an Account
         </button>
       </div>
-<SectionOne/>
-  
+      <SectionOne />
 
-      <section>
-        <h1>How its Works</h1>
-
-
-      </section>
-
-      
-    </div>  
+    <HowItWorksSection/>
+     
+    </div>
   </div>
 );
 
