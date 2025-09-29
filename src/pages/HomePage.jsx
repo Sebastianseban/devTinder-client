@@ -53,7 +53,7 @@ const HomePage = () => (
 
           <button className="group px-8 py-4 rounded-2xl font-semibold text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/30 transition-all duration-300 backdrop-blur-xl">
             <span className="flex items-center gap-2">
-              Watch Demo
+             i Have Account
               <FaStar className="text-[#FFD93D]" />
             </span>
           </button>
