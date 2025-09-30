@@ -11,7 +11,7 @@
   const SignUpPage = () => {
       const navigate = useNavigate()
     return (
-  
+      
       <div className="min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E] flex items-center justify-center p-4">
   <div className="w-full max-w-md">
     <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-5 shadow-lg">
