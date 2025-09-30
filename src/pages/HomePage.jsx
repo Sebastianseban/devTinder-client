@@ -12,14 +12,9 @@ import HowItWorksSection from "../components/home/HowItWorksStep";
 
 const HomePage = () => (
   <div className="w-full min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E] overflow-x-hidden">
-    {/* Animated Background Elements */}
-    <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#00D4FF] rounded-full mix-blend-soft-light filter blur-3xl opacity-20 animate-pulse"></div>
-      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#FF6B95] rounded-full mix-blend-soft-light filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#7B68EE] rounded-full mix-blend-soft-light filter blur-3xl opacity-10 animate-pulse delay-500"></div>
-    </div>
 
-    <div className="relative flex flex-col items-center w-full px-4 py-12 md:py-24">
+
+    <div className=" flex flex-col items-center w-full px-4 py-12 md:py-24">
       {/* Hero Section */}
       <div className="text-center max-w-4xl mt-16 md:mt-24">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">

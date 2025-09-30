@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Upload, User } from 'lucide-react';
 
@@ -45,7 +46,7 @@ const FileUpload = ({ label, onFileSelect }) => {
   return (
     <div className="mb-6">
       {label && (
-        <label className="block text-sm font-medium text-slate-300 mb-3">
+        <label className="block text-sm font-medium text-white/80 mb-3">
           {label}
         </label>
       )}
@@ -53,9 +54,11 @@ const FileUpload = ({ label, onFileSelect }) => {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`border-2 border-dashed ${
-          isDragging ? 'border-cyan-500 bg-cyan-500/10' : 'border-slate-700'
-        } rounded-lg p-12 text-center hover:border-cyan-500 transition-colors cursor-pointer block`}
+        className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer block backdrop-blur-sm ${
+          isDragging 
+            ? 'border-[#00D4FF] bg-[#00D4FF]/10' 
+            : 'border-white/20 hover:border-[#00D4FF] hover:bg-white/5'
+        }`}
       >
         <input
           type="file"
@@ -68,19 +71,19 @@ const FileUpload = ({ label, onFileSelect }) => {
             <img
               src={preview}
               alt="Preview"
-              className="w-24 h-24 rounded-full object-cover mb-3"
+              className="w-24 h-24 rounded-full object-cover mb-3 border-2 border-white/20"
             />
-            <p className="text-cyan-400 text-sm">Click to change photo</p>
+            <p className="text-[#00D4FF] text-sm font-medium">Click to change photo</p>
           </div>
         ) : (
           <>
-            <User className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-            <div className="flex items-center justify-center gap-2 text-cyan-400 mb-2">
+            <User className="w-12 h-12 text-white/40 mx-auto mb-3" />
+            <div className="flex items-center justify-center gap-2 text-[#00D4FF] mb-2">
               <Upload className="w-4 h-4" />
               <span className="font-medium">Upload your photo</span>
             </div>
-            <p className="text-slate-500 text-sm">Drag & drop or click to browse</p>
-            <p className="text-slate-600 text-xs mt-1">PNG, JPG, GIF up to 5MB</p>
+            <p className="text-white/60 text-sm">Drag & drop or click to browse</p>
+            <p className="text-white/40 text-xs mt-1">PNG, JPG, GIF up to 100MB</p>
           </>
         )}
       </label>

@@ -1,6 +1,7 @@
 
-import React from 'react';
-import { FaCode, FaRocket } from 'react-icons/fa';
+import React from "react";
+import { FaCode, FaRocket } from "react-icons/fa";
+import { Link } from "react-router";
 
 const Navbar = () => {
   return (
@@ -20,32 +21,34 @@ const Navbar = () => {
 
       {/* Navigation Links - Hidden on mobile */}
       <div className="hidden md:flex items-center gap-8 z-10">
-        <a href="#" className="text-white/70 hover:text-white transition-colors duration-200 font-medium text-sm">
+        <Link to="/features" className="text-white/70 hover:text-white transition-colors duration-200 font-medium text-sm">
           Features
-        </a>
-        <a href="#" className="text-white/70 hover:text-white transition-colors duration-200 font-medium text-sm">
+        </Link>
+        <Link to="/how-it-works" className="text-white/70 hover:text-white transition-colors duration-200 font-medium text-sm">
           How It Works
-        </a>
-        <a href="#" className="text-white/70 hover:text-white transition-colors duration-200 font-medium text-sm">
+        </Link>
+        <Link to="/success-stories" className="text-white/70 hover:text-white transition-colors duration-200 font-medium text-sm">
           Success Stories
-        </a>
-        <a href="#" className="text-white/70 hover:text-white transition-colors duration-200 font-medium text-sm">
+        </Link>
+        <Link to="/pricing" className="text-white/70 hover:text-white transition-colors duration-200 font-medium text-sm">
           Pricing
-        </a>
+        </Link>
       </div>
 
       {/* Auth Buttons */}
       <div className="flex items-center gap-3 z-10">
-        <button
+        <Link
+          to="/auth/signin"
           className="group px-6 py-2.5 rounded-xl text-white/90 hover:text-white 
             bg-white/5 hover:bg-white/10 border border-white/15 hover:border-white/25
             transition-all duration-300 backdrop-blur-xl font-medium text-sm
             hover:shadow-lg flex items-center gap-2"
         >
           <span>Sign In</span>
-        </button>
+        </Link>
         
-        <button
+        <Link
+          to="/auth/signup"
           className="group px-6 py-2.5 rounded-xl font-semibold text-black 
             bg-gradient-to-r from-[#00D4FF] via-[#7B68EE] to-[#FF6B95] 
             hover:from-[#00C4EB] hover:via-[#6A5BCD] hover:to-[#E55A85]
@@ -54,7 +57,7 @@ const Navbar = () => {
         >
           <FaRocket className="text-sm" />
           <span>Get Started</span>
-        </button>
+        </Link>
 
         {/* Mobile Menu Button - Hidden on desktop */}
         <button className="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/15 flex items-center justify-center text-white/80 hover:text-white transition-colors duration-200">

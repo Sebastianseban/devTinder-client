@@ -13,12 +13,13 @@ const SignInPage = () => {
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+     
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-8">
+           <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Welcome Back</h1>
           <p className="text-slate-400 text-lg">Sign in to continue your developer journey</p>
         </div>
 
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-8">
           <div className="space-y-3 mb-6">
             <SocialButton icon={Github}>Continue with GitHub</SocialButton>
             <SocialButton icon={Mail}>Continue with Google</SocialButton>
