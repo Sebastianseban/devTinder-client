@@ -9,6 +9,9 @@ import HomePage from "./pages/homePage.jsx";
 import SignUpPage from "./pages/auth/SignUpPage.jsx";
 import SignInPage from "./pages/auth/SignInPage.jsx";
 import CompleteProfilePage from "./pages/auth/CompleteProfilePage.jsx";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/reactQuery.js";
+import FeedPage from "./pages/auth/FeedPage.jsx";
 
 
 const router = createBrowserRouter([
@@ -17,6 +20,7 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { index: "feed", element: <FeedPage/> },
      
     ],
   },
@@ -33,6 +37,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
+    <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
+    </QueryClientProvider>
   </StrictMode>
 );

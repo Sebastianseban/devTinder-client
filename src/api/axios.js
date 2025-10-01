@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
 
         const res = await refreshInstance.get("/auth/refresh-token");
 
-        const newAccessToken = res.data.accessToken;
+        const newAccessToken = res.data.data.accessToken;
 
         // Save in memory
         setAccessToken(newAccessToken);
