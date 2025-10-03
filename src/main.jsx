@@ -11,7 +11,7 @@ import SignInPage from "./pages/auth/SignInPage.jsx";
 import CompleteProfilePage from "./pages/auth/CompleteProfilePage.jsx";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/reactQuery.js";
-import FeedPage from "./pages/auth/FeedPage.jsx";
+import FeedPage from "./pages/feed/FeedPage.jsx";
 
 
 const router = createBrowserRouter([
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { index: "feed", element: <FeedPage/> },
+      { path: "feed", element: <FeedPage/> },
      
     ],
   },

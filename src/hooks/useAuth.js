@@ -10,3 +10,12 @@ export const useRegister = () => {
     onSuccess: (user) => setUser(user),
   });
 };
+
+export const useLogin = () => {
+  const setUser = useUserStore((state) => state.setUser); // Fix: get setUser here too
+
+  return useMutation({
+    mutationFn: authApi.login,
+    onSuccess: (user) => setUser(user), // Fix: pass the returned user
+  });
+};
