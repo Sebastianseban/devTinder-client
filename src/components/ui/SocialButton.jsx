@@ -1,15 +1,4 @@
-// const SocialButton = ({ icon: Icon, children, className = '', ...props }) => {
-//   return (
-//     <button
-//       className={`w-full bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 py-3 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-3 ${className}`}
-//       {...props}
-//     >
-//       {Icon && <Icon className="w-5 h-5" />}
-//       {children}
-//     </button>
-//   );
-// };
-// export default SocialButton
+
 const SocialButton = ({ icon: Icon, children, className = '', ...props }) => {
   return (
     <button

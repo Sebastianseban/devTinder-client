@@ -7,12 +7,14 @@ import Divider from "../../components/ui/Divider";
 import Input from "../../components/ui/Input";
 import PasswordInput from "../../components/ui/PasswordInput";
 import Button from "../../components/ui/Button";
-import { useRegister } from "../../hooks/useAuth";
+import { useGoogleAuth, useRegister } from "../../hooks/useAuth";
+import { useGoogleLogin } from "@react-oauth/google";
 
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { mutate, isLoading, isError, error } = useRegister();
+ const  googleAuthMutation = useGoogleAuth()
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -36,6 +38,21 @@ const SignUpPage = () => {
     });
   };
 
+
+
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      googleAuthMutation.mutate(codeResponse.code, {
+        onSuccess: (user) => {
+          if (user.isProfileComplete) navigate("/feed");
+          else navigate("/auth/complete-profile");
+        },
+      });
+    },
+    onError: (error) => console.error("Google login failed:", error),
+    flow: "auth-code",
+  });
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -58,6 +75,7 @@ const SignUpPage = () => {
             </SocialButton>
             <SocialButton
               icon={Mail}
+              onClick={() => googleLogin()}
               className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white/80 hover:text-white text-xs py-2"
             >
               Google

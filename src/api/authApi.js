@@ -13,4 +13,11 @@ export const authApi = {
     if (accessToken) setAccessToken(accessToken);
     return res.data.data.user;
   },
+
+ googleAuth: async (code) => {
+    const res = await axiosInstance.post("/auth/google-auth", { code });
+    const { accessToken, user } = res.data.data;
+    if (accessToken) setAccessToken(accessToken);
+    return user;
+  },
 };

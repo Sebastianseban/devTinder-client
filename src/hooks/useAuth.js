@@ -19,3 +19,11 @@ export const useLogin = () => {
     onSuccess: (user) => setUser(user), // Fix: pass the returned user
   });
 };
+
+export const useGoogleAuth = () => {
+  const setUser = useUserStore((state) => state.setUser);
+  return useMutation({
+    mutationFn: authApi.googleAuth,
+    onSuccess: (user) => setUser(user),
+  });
+};

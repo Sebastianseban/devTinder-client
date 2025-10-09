@@ -26,7 +26,7 @@ const FeedPage = () => {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E] py-10">
-      <h1 className="text-3xl font-bold text-purple-200 mb-8">Developer Feed</h1>
+   
 
       <div className="relative w-full max-w-md h-[600px] flex items-center justify-center">
         {topCards
