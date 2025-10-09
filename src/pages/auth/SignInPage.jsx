@@ -6,11 +6,12 @@ import Button from "../../components/ui/Button";
 import Divider from "../../components/ui/Divider";
 import PasswordInput from "../../components/ui/PasswordInput";
 import { useNavigate } from "react-router";
-import { useLogin } from "../../hooks/useAuth";
+import { useGoogleAuth, useLogin } from "../../hooks/useAuth";
 import { useGoogleLogin } from "@react-oauth/google";
-import axiosInstance from "../../api/axios";
+
 
 const SignInPage = () => {
+   const  googleAuthMutation = useGoogleAuth()
 
   const navigate = useNavigate()
   const { mutate } = useLogin();
@@ -33,32 +34,18 @@ const SignInPage = () => {
     });
   };
 
-   const responseGoogle = async (authResult) => {
-    console.log(authResult)
-    try {
-      const code = authResult.code;
-      const response = await axiosInstance.post("/auth/google-auth", { code });
-      const {accessToken } = response.data.data;
-
-      localStorage.setItem("accessToken", accessToken);
-
-  
-      navigate("/feed");
-    } catch (error) {
-      console.error("Google signup failed", error);
-
-    }
-  };
-
-   const googleLogin = useGoogleLogin({
-    onSuccess: responseGoogle,
-    onError: (error) => {
-      console.error("Google OAuth error", error);
-   
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      googleAuthMutation.mutate(codeResponse.code, {
+        onSuccess: (user) => {
+          if (user.isProfileComplete) navigate("/feed");
+          else navigate("/auth/complete-profile");
+        },
+      });
     },
+    onError: (error) => console.error("Google login failed:", error),
     flow: "auth-code",
   });
-
   
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
@@ -72,8 +59,8 @@ const SignInPage = () => {
           </div>
 
           <div className="space-y-3 mb-6">
-            <SocialButton   onClick={() => googleLogin()} icon={Github}>Continue with GitHub</SocialButton>
-            <SocialButton icon={Mail}>Continue with Google</SocialButton>
+            <SocialButton    icon={Github}>Continue with GitHub</SocialButton>
+            <SocialButton onClick={() => googleLogin()} icon={Mail}>Continue with Google</SocialButton>
           </div>
 
           <Divider text="or continue with email" />
