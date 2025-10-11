@@ -13,9 +13,10 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/reactQuery.js";
 import FeedPage from "./pages/feed/FeedPage.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
-// const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const router = createBrowserRouter([
   {
@@ -23,8 +24,14 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "feed", element: <FeedPage/> },
-     
+      {
+        path: "feed",
+        element:<ProtectedRoute><FeedPage/></ProtectedRoute>,
+      },
+      {
+        path: "*",
+        element:<NotFoundPage/>
+      },
     ],
   },
   {
@@ -33,17 +40,15 @@ const router = createBrowserRouter([
     children: [
       { path: "signup", element: <SignUpPage /> },
       { path: "signin", element: <SignInPage /> },
-       { path: "complete-profile", element: <CompleteProfilePage /> },
+      { path: "complete-profile", element: <CompleteProfilePage /> },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <GoogleOAuthProvider clientId="136096980409-lf6upgsl13s55t6mv9ugcamqov92f3ks.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </QueryClientProvider>
-    </GoogleOAuthProvider>
-  </StrictMode>
+  </GoogleOAuthProvider>
 );

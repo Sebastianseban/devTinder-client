@@ -1,20 +1,19 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import SocialButton from "../../components/ui/SocialButton";
+import { useGoogleLogin } from "@react-oauth/google";
 import { Github, Mail } from "lucide-react";
+import SocialButton from "../../components/ui/SocialButton";
 import Divider from "../../components/ui/Divider";
 import Input from "../../components/ui/Input";
 import PasswordInput from "../../components/ui/PasswordInput";
 import Button from "../../components/ui/Button";
 import { useGoogleAuth, useRegister } from "../../hooks/useAuth";
-import { useGoogleLogin } from "@react-oauth/google";
-
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const { mutate, isLoading, isError, error } = useRegister();
- const  googleAuthMutation = useGoogleAuth()
+  const registerMutation = useRegister();
+  const googleAuthMutation = useGoogleAuth();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -31,28 +30,40 @@ const SignUpPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mutate(formData, {
+    
+    registerMutation.mutate(formData, {
       onSuccess: () => {
         navigate("/auth/complete-profile");
       },
+      onError: (error) => {
+        console.error("Registration failed:", error);
+      },
     });
   };
-
-
-
 
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       googleAuthMutation.mutate(codeResponse.code, {
         onSuccess: (user) => {
-          if (user.isProfileComplete) navigate("/feed");
-          else navigate("/auth/complete-profile");
+          if (user.isProfileComplete) {
+            navigate("/feed");
+          } else {
+            navigate("/auth/complete-profile");
+          }
+        },
+        onError: (error) => {
+          console.error("Google auth failed:", error);
         },
       });
     },
-    onError: (error) => console.error("Google login failed:", error),
+    onError: (error) => {
+      console.error("Google login failed:", error);
+    },
     flow: "auth-code",
   });
+
+  const isLoading = registerMutation.isPending || googleAuthMutation.isPending;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -69,6 +80,7 @@ const SignUpPage = () => {
           <div className="flex gap-2 mb-4">
             <SocialButton
               icon={Github}
+              disabled={isLoading}
               className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white/80 hover:text-white text-xs py-2"
             >
               GitHub
@@ -76,9 +88,10 @@ const SignUpPage = () => {
             <SocialButton
               icon={Mail}
               onClick={() => googleLogin()}
+              disabled={isLoading}
               className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white/80 hover:text-white text-xs py-2"
             >
-              Google
+              {googleAuthMutation.isPending ? "Loading..." : "Google"}
             </SocialButton>
           </div>
 
@@ -93,6 +106,8 @@ const SignUpPage = () => {
                 placeholder="sebastian"
                 value={formData.firstName}
                 onChange={handleChange}
+                disabled={isLoading}
+                required
               />
               <Input
                 label="Last Name"
@@ -100,6 +115,8 @@ const SignUpPage = () => {
                 placeholder="andrews"
                 value={formData.lastName}
                 onChange={handleChange}
+                disabled={isLoading}
+                required
               />
             </div>
 
@@ -110,6 +127,8 @@ const SignUpPage = () => {
               placeholder="sebastianseban"
               value={formData.username}
               onChange={handleChange}
+              disabled={isLoading}
+              required
             />
             <p className="text-white/40 text-xs -mt-1 mb-2">
               3-30 chars, letters & numbers only
@@ -123,6 +142,8 @@ const SignUpPage = () => {
               placeholder="john@example.com"
               value={formData.emailId}
               onChange={handleChange}
+              disabled={isLoading}
+              required
             />
 
             {/* Password Fields */}
@@ -133,6 +154,8 @@ const SignUpPage = () => {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
+                disabled={isLoading}
+                required
               />
               <PasswordInput
                 label="Confirm"
@@ -140,18 +163,27 @@ const SignUpPage = () => {
                 placeholder="••••••••"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                disabled={isLoading}
+                required
               />
             </div>
 
             {/* Submit Button */}
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Signing Up..." : "Continue"}
+              {registerMutation.isPending ? "Signing Up..." : "Continue"}
             </Button>
 
             {/* Error Display */}
-            {isError && (
+            {registerMutation.isError && (
               <p className="text-red-400 text-sm mt-2">
-                {error?.response?.data?.message || "Something went wrong"}
+                {registerMutation.error?.response?.data?.message ||
+                  "Something went wrong"}
+              </p>
+            )}
+            {googleAuthMutation.isError && (
+              <p className="text-red-400 text-sm mt-2">
+                {googleAuthMutation.error?.response?.data?.message ||
+                  "Google authentication failed"}
               </p>
             )}
           </form>
@@ -162,6 +194,7 @@ const SignUpPage = () => {
             <button
               onClick={() => navigate("/auth/signin")}
               className="text-[#00D4FF] hover:text-[#00C4EB] font-medium transition-colors duration-300"
+              disabled={isLoading}
             >
               Sign in
             </button>

@@ -1,24 +1,24 @@
+
 import axios from "axios";
 import useUserStore from "../store/userStore";
-
-let accessToken = null;
-
-export const setAccessToken = (token) => {
-  accessToken = token;
-};
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:3000/api/v1",
   withCredentials: true,
 });
 
+// Request interceptor - get token from store
 axiosInstance.interceptors.request.use((config) => {
+  const accessToken = useUserStore.getState().accessToken;
+  
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
+  
   return config;
 });
 
+// Response interceptor - handle token refresh
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/users/refresh-token")
+      !originalRequest.url?.includes("/auth/refresh-token")
     ) {
       originalRequest._retry = true;
 
@@ -38,11 +38,10 @@ axiosInstance.interceptors.response.use(
         });
 
         const res = await refreshInstance.get("/auth/refresh-token");
-
         const newAccessToken = res.data.data.accessToken;
 
-        // Save in memory
-        setAccessToken(newAccessToken);
+        // Save new token in store
+        useUserStore.getState().setAccessToken(newAccessToken);
 
         // Retry the original request with new token
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -52,7 +51,6 @@ axiosInstance.interceptors.response.use(
 
         // Clear user state
         useUserStore.getState().clearUser();
-        setAccessToken(null);
 
         // Optional: redirect to login
         // window.location.href = "/login";
@@ -64,7 +62,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-
 
 export default axiosInstance;
