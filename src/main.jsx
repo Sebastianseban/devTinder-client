@@ -15,6 +15,7 @@ import FeedPage from "./pages/feed/FeedPage.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import GitHubCallback from "./pages/auth/GitHubCallback.jsx";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
       { path: "signup", element: <SignUpPage /> },
       { path: "signin", element: <SignInPage /> },
       { path: "complete-profile", element: <CompleteProfilePage /> },
+         { path: "github/callback", element: <GitHubCallback /> },
     ],
   },
 ]);

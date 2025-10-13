@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -14,6 +13,9 @@ const SignInPage = () => {
   const navigate = useNavigate();
   const loginMutation = useLogin();
   const googleAuthMutation = useGoogleAuth();
+
+  const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+  const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 
   const [formData, setFormData] = useState({
     emailId: "",
@@ -58,6 +60,11 @@ const SignInPage = () => {
     flow: "auth-code",
   });
 
+  const handleGithubLogin = () => {
+    // Redirects user to GitHub's login screen
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user:email`;
+    window.location.href = githubAuthUrl;
+  };
   const isLoading = loginMutation.isPending || googleAuthMutation.isPending;
 
   return (
@@ -72,7 +79,11 @@ const SignInPage = () => {
           </div>
 
           <div className="space-y-3 mb-6">
-            <SocialButton icon={Github} disabled={isLoading}>
+            <SocialButton
+              onClick={() => handleGithubLogin()}
+              icon={Github}
+              disabled={isLoading}
+            >
               Continue with GitHub
             </SocialButton>
             <SocialButton

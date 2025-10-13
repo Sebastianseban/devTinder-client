@@ -46,6 +46,20 @@ export const authApi = {
     return user;
   },
 
+    githubAuth: async (code) => {
+    const res = await axiosInstance.post("/auth/github", { code });
+    const { accessToken, user } = res.data.data;
+
+    if (accessToken) {
+      useUserStore.getState().setAccessToken(accessToken);
+    }
+    if (user) {
+      useUserStore.getState().setUser(user);
+    }
+
+    return user;
+  },
+
   logout: async () => {
     try {
       await axiosInstance.post("/auth/logout");

@@ -15,6 +15,9 @@ const SignUpPage = () => {
   const registerMutation = useRegister();
   const googleAuthMutation = useGoogleAuth();
 
+  const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -62,6 +65,12 @@ const SignUpPage = () => {
     flow: "auth-code",
   });
 
+  const handleGithubLogin = () => {
+  // Redirects user to GitHub's login screen
+  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user:email`;
+  window.location.href = githubAuthUrl;
+};
+
   const isLoading = registerMutation.isPending || googleAuthMutation.isPending;
 
   return (
@@ -80,6 +89,7 @@ const SignUpPage = () => {
           <div className="flex gap-2 mb-4">
             <SocialButton
               icon={Github}
+              onClick={() => handleGithubLogin()}
               disabled={isLoading}
               className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white/80 hover:text-white text-xs py-2"
             >
