@@ -9,14 +9,16 @@ import Input from "../../components/ui/Input";
 import PasswordInput from "../../components/ui/PasswordInput";
 import Button from "../../components/ui/Button";
 import { useGoogleAuth, useRegister } from "../../hooks/useAuth";
+import { registerSchema } from "../../utils/validationSchemas";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const registerMutation = useRegister();
   const googleAuthMutation = useGoogleAuth();
 
-  const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID
-const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
+  const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+  const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -33,21 +35,45 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
+    // ✅ Validate form with Zod
+    const result = registerSchema.safeParse(formData);
+
+    if (!result.success) {
+      const firstError =
+        result.error?.issues?.[0]?.message ||
+        result.error?.errors?.[0]?.message ||
+        "Invalid form data";
+
+      toast.error(firstError);
+      return;
+    }
+
+    // ✅ Loading toast
+    const toastId = toast.loading("Creating your account...");
+
     registerMutation.mutate(formData, {
       onSuccess: () => {
+        toast.dismiss(toastId);
+        toast.success("Account created successfully!");
         navigate("/auth/complete-profile");
       },
       onError: (error) => {
+        toast.dismiss(toastId);
+        const message =
+          error?.response?.data?.message || "Registration failed. Try again.";
+        toast.error(message);
         console.error("Registration failed:", error);
       },
     });
   };
 
+  // ✅ Google login
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       googleAuthMutation.mutate(codeResponse.code, {
         onSuccess: (user) => {
+          toast.success("Google login successful!");
           if (user.isProfileComplete) {
             navigate("/feed");
           } else {
@@ -55,21 +81,28 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
           }
         },
         onError: (error) => {
+          toast.error("Google authentication failed. Please try again.");
           console.error("Google auth failed:", error);
         },
       });
     },
     onError: (error) => {
+      toast.error("Google login failed.");
       console.error("Google login failed:", error);
     },
     flow: "auth-code",
   });
 
+  // ✅ GitHub login
   const handleGithubLogin = () => {
-  // Redirects user to GitHub's login screen
-  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user:email`;
-  window.location.href = githubAuthUrl;
-};
+    if (!GITHUB_CLIENT_ID || !REDIRECT_URI) {
+      toast.error("GitHub login not configured properly.");
+      return;
+    }
+
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user:email`;
+    window.location.href = githubAuthUrl;
+  };
 
   const isLoading = registerMutation.isPending || googleAuthMutation.isPending;
 
@@ -89,7 +122,7 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
           <div className="flex gap-2 mb-4">
             <SocialButton
               icon={Github}
-              onClick={() => handleGithubLogin()}
+              onClick={handleGithubLogin}
               disabled={isLoading}
               className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white/80 hover:text-white text-xs py-2"
             >
@@ -97,7 +130,7 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
             </SocialButton>
             <SocialButton
               icon={Mail}
-              onClick={() => googleLogin()}
+              onClick={googleLogin}
               disabled={isLoading}
               className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white/80 hover:text-white text-xs py-2"
             >
@@ -107,8 +140,8 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
 
           <Divider text="or" />
 
+          {/* Form */}
           <form onSubmit={handleSubmit}>
-            {/* Name Fields */}
             <div className="grid grid-cols-2 gap-2 mb-2">
               <Input
                 label="First Name"
@@ -130,7 +163,6 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
               />
             </div>
 
-            {/* Username */}
             <Input
               label="Username"
               name="username"
@@ -141,10 +173,9 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
               required
             />
             <p className="text-white/40 text-xs -mt-1 mb-2">
-              3-30 chars, letters & numbers only
+              3–30 chars, letters & numbers only
             </p>
 
-            {/* Email */}
             <Input
               label="Email"
               type="email"
@@ -156,7 +187,6 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
               required
             />
 
-            {/* Password Fields */}
             <div className="grid grid-cols-2 gap-2">
               <PasswordInput
                 label="Password"
@@ -178,27 +208,11 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
               />
             </div>
 
-            {/* Submit Button */}
             <Button type="submit" disabled={isLoading}>
               {registerMutation.isPending ? "Signing Up..." : "Continue"}
             </Button>
-
-            {/* Error Display */}
-            {registerMutation.isError && (
-              <p className="text-red-400 text-sm mt-2">
-                {registerMutation.error?.response?.data?.message ||
-                  "Something went wrong"}
-              </p>
-            )}
-            {googleAuthMutation.isError && (
-              <p className="text-red-400 text-sm mt-2">
-                {googleAuthMutation.error?.response?.data?.message ||
-                  "Google authentication failed"}
-              </p>
-            )}
           </form>
 
-          {/* Sign In Link */}
           <p className="text-center text-white/60 mt-4 text-xs">
             Already have an account?{" "}
             <button

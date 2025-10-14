@@ -16,6 +16,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import GitHubCallback from "./pages/auth/GitHubCallback.jsx";
+import { Toaster } from "react-hot-toast";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <QueryClientProvider client={queryClient}>
+      <Toaster position="top-right" reverseOrder={false} />
       <RouterProvider router={router} />
     </QueryClientProvider>
   </GoogleOAuthProvider>
