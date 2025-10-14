@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import FileUpload from "../../components/form/FileUpload";
 import Input from "../../components/ui/Input";
 import SelectField from "../../components/form/SelectField";
@@ -8,6 +9,7 @@ import TextArea from "../../components/form/TextArea";
 import { Github, Linkedin, Globe, Twitter } from "lucide-react";
 import Button from "../../components/ui/Button";
 import { useCompleteProfile } from "../../hooks/useProfile";
+import { completeProfileSchema } from "../../utils/validationSchemas";
 
 const CompleteProfilePage = () => {
   const { mutate, isPending, isError, error } = useCompleteProfile();
@@ -28,28 +30,40 @@ const CompleteProfilePage = () => {
     photo: null,
   });
 
-  // Input handler
+  const [fieldErrors, setFieldErrors] = useState({});
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setFieldErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // File handler
   const handleFileChange = (file) => {
     setFormData((prev) => ({ ...prev, photo: file }));
+    setFieldErrors((prev) => ({ ...prev, photo: "" }));
   };
 
-  // Skills handler
   const handleSkillsChange = (skills) => {
     setFormData((prev) => ({ ...prev, skills }));
+    setFieldErrors((prev) => ({ ...prev, skills: "" }));
   };
 
-  // Form submit
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const payload = new FormData();
+    const result = completeProfileSchema.safeParse(formData);
 
+    if (!result.success) {
+      const errors = {};
+      result.error.issues.forEach((issue) => {
+        errors[issue.path[0]] = issue.message;
+      });
+      setFieldErrors(errors);
+      toast.error("Please fix the errors in the form");
+      return;
+    }
+
+    const payload = new FormData();
     for (const key in formData) {
       const value = formData[key];
       if (Array.isArray(value)) {
@@ -59,10 +73,19 @@ const CompleteProfilePage = () => {
       }
     }
 
-    mutate(payload);
+    const toastId = toast.loading("Saving profile...");
+    mutate(payload, {
+      onSuccess: () => {
+        toast.dismiss(toastId);
+        toast.success("Profile completed successfully!");
+      },
+      onError: (err) => {
+        toast.dismiss(toastId);
+        toast.error(err?.message || "Failed to complete profile");
+      },
+    });
   };
 
-  // Options
   const genderOptions = [
     { value: "", label: "Select gender" },
     { value: "male", label: "Male" },
@@ -97,16 +120,18 @@ const CompleteProfilePage = () => {
       <div className="max-w-xl mx-auto relative">
         <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-5 shadow-lg relative">
           <div className="text-center mb-4">
-            <h1 className="text-2xl font-bold text-white">
-              Complete Your Profile
-            </h1>
+            <h1 className="text-2xl font-bold text-white">Complete Your Profile</h1>
             <p className="text-white/60 text-sm">
               Add details to make your profile stand out
             </p>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <FileUpload label="Profile Photo" onFileSelect={handleFileChange} />
+            <FileUpload
+              label="Profile Photo"
+              onFileSelect={handleFileChange}
+              error={fieldErrors.photo}
+            />
 
             <div className="grid grid-cols-2 gap-2 mb-2">
               <SelectField
@@ -115,6 +140,7 @@ const CompleteProfilePage = () => {
                 value={formData.gender}
                 options={genderOptions}
                 onChange={handleChange}
+                error={fieldErrors.gender}
               />
               <Input
                 label="Age"
@@ -122,6 +148,7 @@ const CompleteProfilePage = () => {
                 name="age"
                 value={formData.age}
                 onChange={handleChange}
+                error={fieldErrors.age}
               />
             </div>
 
@@ -130,18 +157,21 @@ const CompleteProfilePage = () => {
               name="location"
               value={formData.location}
               onChange={handleChange}
+              error={fieldErrors.location}
             />
             <Input
               label="Headline"
               name="headline"
               value={formData.headline}
               onChange={handleChange}
+              error={fieldErrors.headline}
             />
             <Input
               label="Phone Number"
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleChange}
+              error={fieldErrors.phoneNumber}
             />
 
             <SelectField
@@ -150,12 +180,14 @@ const CompleteProfilePage = () => {
               value={formData.experienceLevel}
               options={experienceOptions}
               onChange={handleChange}
+              error={fieldErrors.experienceLevel}
             />
 
             <SkillSelector
               availableSkills={availableSkills}
               selectedSkills={formData.skills}
               onChange={handleSkillsChange}
+              error={fieldErrors.skills}
             />
 
             <TextArea
@@ -163,6 +195,7 @@ const CompleteProfilePage = () => {
               name="bio"
               value={formData.bio}
               onChange={handleChange}
+              error={fieldErrors.bio}
             />
 
             <div className="space-y-2 mb-4">
