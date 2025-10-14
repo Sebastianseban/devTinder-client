@@ -1,13 +1,16 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useGoogleLogin } from "@react-oauth/google";
 import { Github, Mail } from "lucide-react";
+import toast from "react-hot-toast";
 import SocialButton from "../../components/ui/SocialButton";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Divider from "../../components/ui/Divider";
 import PasswordInput from "../../components/ui/PasswordInput";
 import { useGoogleAuth, useLogin } from "../../hooks/useAuth";
+import { loginSchema } from "../../utils/validationSchemas";
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -29,11 +32,30 @@ const SignInPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const result = loginSchema.safeParse(formData);
+
+    if (!result.success) {
+      const firstError =
+        result.error?.issues?.[0]?.message ||
+        result.error?.errors?.[0]?.message ||
+        "Invalid credentials";
+      toast.error(firstError);
+      return;
+    }
+
+    const toastId = toast.loading("Signing you in...");
+
     loginMutation.mutate(formData, {
       onSuccess: () => {
+        toast.dismiss(toastId);
+        toast.success("Welcome back!");
         navigate("/feed");
       },
       onError: (error) => {
+        toast.dismiss(toastId);
+        toast.error(
+          error?.response?.data?.message || "Login failed. Please try again."
+        );
         console.error("Login failed:", error);
       },
     });
@@ -44,27 +66,30 @@ const SignInPage = () => {
       googleAuthMutation.mutate(codeResponse.code, {
         onSuccess: (user) => {
           if (user.isProfileComplete) {
+            toast.success("Signed in with Google!");
             navigate("/feed");
           } else {
             navigate("/auth/complete-profile");
           }
         },
         onError: (error) => {
+          toast.error("Google authentication failed");
           console.error("Google auth failed:", error);
         },
       });
     },
     onError: (error) => {
+      toast.error("Google login failed");
       console.error("Google login failed:", error);
     },
     flow: "auth-code",
   });
 
   const handleGithubLogin = () => {
-    // Redirects user to GitHub's login screen
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user:email`;
     window.location.href = githubAuthUrl;
   };
+
   const isLoading = loginMutation.isPending || googleAuthMutation.isPending;
 
   return (
@@ -80,14 +105,14 @@ const SignInPage = () => {
 
           <div className="space-y-3 mb-6">
             <SocialButton
-              onClick={() => handleGithubLogin()}
+              onClick={handleGithubLogin}
               icon={Github}
               disabled={isLoading}
             >
               Continue with GitHub
             </SocialButton>
             <SocialButton
-              onClick={() => googleLogin()}
+              onClick={googleLogin}
               icon={Mail}
               disabled={isLoading}
             >
@@ -135,17 +160,10 @@ const SignInPage = () => {
               {loginMutation.isPending ? "Signing In..." : "Sign In"}
             </Button>
 
-            {/* Error Display */}
             {loginMutation.isError && (
               <p className="text-red-400 text-sm mt-3">
                 {loginMutation.error?.response?.data?.message ||
                   "Login failed. Please try again."}
-              </p>
-            )}
-            {googleAuthMutation.isError && (
-              <p className="text-red-400 text-sm mt-3">
-                {googleAuthMutation.error?.response?.data?.message ||
-                  "Google authentication failed"}
               </p>
             )}
           </form>
