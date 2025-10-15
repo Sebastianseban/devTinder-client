@@ -9,6 +9,7 @@ import {
 
 import SectionOne from "../components/home/SectionOne";
 import HowItWorksSection from "../components/home/HowItWorksStep";
+import { Link } from "react-router";
 
 const HomePage = () => (
   <div className="w-full min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E] overflow-x-hidden">
@@ -39,19 +40,19 @@ const HomePage = () => (
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
-          <button className="group relative px-8 py-4 rounded-2xl font-bold text-black bg-gradient-to-r from-[#00D4FF] via-[#7B68EE] to-[#FF6B95] hover:from-[#00C4EB] hover:via-[#6A5BCD] hover:to-[#E55A85] transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1">
+          <Link to="/auth/signin" className="group relative px-8 py-4 rounded-2xl font-bold text-black bg-gradient-to-r from-[#00D4FF] via-[#7B68EE] to-[#FF6B95] hover:from-[#00C4EB] hover:via-[#6A5BCD] hover:to-[#E55A85] transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1">
             <span className="flex items-center gap-2">
               Start Matching Now
               <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
             </span>
-          </button>
+          </Link>
 
-          <button className="group px-8 py-4 rounded-2xl font-semibold text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/30 transition-all duration-300 backdrop-blur-xl">
+          <Link  to="/auth/signup" className="group px-8 py-4 rounded-2xl font-semibold text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/30 transition-all duration-300 backdrop-blur-xl">
             <span className="flex items-center gap-2">
              i Have Account
               <FaStar className="text-[#FFD93D]" />
             </span>
-          </button>
+          </Link>
         </div>
 
         {/* Stats */}

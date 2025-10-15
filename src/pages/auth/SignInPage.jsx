@@ -43,7 +43,7 @@ const SignInPage = () => {
       return;
     }
 
-    const toastId = toast.loading("Signing you in...");
+    const toastId = toast
 
     loginMutation.mutate(formData, {
       onSuccess: () => {

@@ -50,11 +50,10 @@ const SignUpPage = () => {
     }
 
     // ✅ Loading toast
-    const toastId = toast.loading("Creating your account...");
-
+    const toastId = toast
     registerMutation.mutate(formData, {
       onSuccess: () => {
-        toast.dismiss(toastId);
+    
         toast.success("Account created successfully!");
         navigate("/auth/complete-profile");
       },

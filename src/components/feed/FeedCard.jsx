@@ -1,5 +1,6 @@
 // src/components/feed/FeedCard.jsx
 import React from "react";
+import { IoLocationSharp } from "react-icons/io5";
 
 export default function FeedCard({ dev }) {
   console.log(dev)
@@ -20,7 +21,7 @@ export default function FeedCard({ dev }) {
             {dev.experienceLevel} Developer
           </p>
           <p className="flex items-center text-white text-base gap-2 mt-2 font-light">
-            📍 {dev.location}
+            <IoLocationSharp/> {dev.location}
           </p>
           {dev.isPremium && (
             <span className="absolute top-5 right-5 bg-yellow-400 px-3 py-1 rounded-full font-extrabold text-gray-900 text-xs shadow-lg">

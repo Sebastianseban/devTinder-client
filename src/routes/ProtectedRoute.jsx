@@ -10,6 +10,10 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/auth/signin" replace />;
   }
 
+    if (!user.isProfileComplete) {
+    return <Navigate to="/auth/complete-profile" replace />;
+  }
+
   // Otherwise allow access
   return children;
 };

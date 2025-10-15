@@ -17,6 +17,7 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import GitHubCallback from "./pages/auth/GitHubCallback.jsx";
 import { Toaster } from "react-hot-toast";
+import PublicRoute from "./routes/PublicRoute.jsx";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -25,14 +26,26 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      { index: true, element: <HomePage /> },
+      {
+        index: true,
+        element: (
+          <PublicRoute>
+            {" "}
+            <HomePage />
+          </PublicRoute>
+        ),
+      },
       {
         path: "feed",
-        element:<ProtectedRoute><FeedPage/></ProtectedRoute>,
+        element: (
+          <ProtectedRoute>
+            <FeedPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "*",
-        element:<NotFoundPage/>
+        element: <NotFoundPage />,
       },
     ],
   },
@@ -40,10 +53,18 @@ const router = createBrowserRouter([
     path: "/auth",
     element: <AuthLayout />,
     children: [
-      { path: "signup", element: <SignUpPage /> },
-      { path: "signin", element: <SignInPage /> },
+      {
+        path: "signup",
+        element: (
+          <PublicRoute>
+            {" "}
+            <SignUpPage />{" "}
+          </PublicRoute>
+        ),
+      },
+      { path: "signin", element:<PublicRoute> <SignInPage /></PublicRoute>  },
       { path: "complete-profile", element: <CompleteProfilePage /> },
-         { path: "github/callback", element: <GitHubCallback /> },
+      { path: "github/callback", element: <GitHubCallback /> },
     ],
   },
 ]);
