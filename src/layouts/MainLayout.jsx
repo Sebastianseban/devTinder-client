@@ -4,6 +4,7 @@ import { Outlet } from "react-router";
 import Navbar from "../components/layout/Navbar";
 import useUserStore from "../store/userStore";
 import axiosInstance from "../api/axios";
+import SideBar from "../components/feed/SideBar";
 
 const MainLayout = () => {
   const user = useUserStore((state) => state.user);
@@ -38,10 +39,13 @@ const MainLayout = () => {
   }, []); // Empty dependency array - only run on mount
 
   return (
-    <div className="w-full h-full overflow-scroll">
+    <div className="w-full h-full overflow-scroll ">
       <Navbar />
+    
       <Outlet />
+     
     </div>
+    
   );
 };
 

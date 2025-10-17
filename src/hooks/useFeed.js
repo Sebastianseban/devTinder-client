@@ -4,12 +4,12 @@ import { feedApi } from "../api/feedApi"
 
 
 
-export const useFeed = () => {
+export const useFeed = (filters) => {
     const {setFeed} = useFeedStore()
 
     return useQuery({
-        queryKey:["feed"],
-        queryFn:feedApi.fetchFeed,
+        queryKey:["feed",filters],
+        queryFn: () => feedApi.fetchFeed(filters),
          onSuccess: (data) => {
       setFeed(data.data, data.pagination);
     },
