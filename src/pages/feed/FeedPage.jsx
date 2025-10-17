@@ -8,7 +8,7 @@ import { useSendConnection } from "../../hooks/useConnectionRequest";
 const FeedPage = () => {
   const [filters, setFilters] = useState({
     skills: [],
-    age: { min: 18, max: 40 },
+    age: undefined, // don't send age until user applies
   });
 
   const { data: developers = [], isLoading, isError } = useFeed(filters);
@@ -17,20 +17,9 @@ const FeedPage = () => {
 
   const handleFilterChange = (category, value) => {
     setFilters((prev) => {
-      if (category === "clear")
-        return { skills: [], age: { min: 18, max: 40 } };
-
-      if (category === "skills") {
-        const skills = prev.skills.includes(value)
-          ? prev.skills.filter((s) => s !== value)
-          : [...prev.skills, value];
-        return { ...prev, skills };
-      }
-
-      if (category === "age") {
-        return { ...prev, age: value }; // now age is an object {min, max}
-      }
-
+      if (category === "clear") return { skills: [], age: undefined };
+      if (category === "skills") return { ...prev, skills: value };
+      if (category === "age") return { ...prev, age: value };
       return prev;
     });
   };

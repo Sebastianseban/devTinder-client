@@ -7,26 +7,39 @@ import { GiAges } from "react-icons/gi";
 import { Range, getTrackBackground } from "react-range";
 
 const MIN = 18;
-const MAX = 60;
+const MAX = 100;
 
 const SideBar = ({ filters, onFilterChange }) => {
   const [ageRange, setAgeRange] = useState([
-    filters.age?.min || 18,
+    filters.age?.min || MIN,
     filters.age?.max || 40,
   ]);
 
-  const handleCheckboxChange = (category, value) => {
-    onFilterChange(category, value);
+  const [tempSkills, setTempSkills] = useState(filters.skills || []);
+
+  const handleCheckboxChange = (skill) => {
+    setTempSkills((prev) =>
+      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+    );
   };
 
   const handleAgeChange = (values) => {
     setAgeRange(values);
-    onFilterChange("age", { min: values[0], max: values[1] });
   };
 
   const clearFilters = () => {
-    onFilterChange("clear");
-    setAgeRange([18, 40]);
+    setTempSkills([]);
+    setAgeRange([MIN, MAX]);
+    onFilterChange("clear"); // don't send age
+  };
+
+  const applyFilters = () => {
+    onFilterChange("skills", tempSkills);
+    if (ageRange[0] !== MIN || ageRange[1] !== MAX) {
+      onFilterChange("age", { min: ageRange[0], max: ageRange[1] });
+    } else {
+      onFilterChange("age", undefined); // default range, don't send
+    }
   };
 
   return (
@@ -63,8 +76,8 @@ const SideBar = ({ filters, onFilterChange }) => {
               <input
                 type="checkbox"
                 id={skill}
-                checked={filters.skills?.includes(skill) || false}
-                onChange={() => handleCheckboxChange("skills", skill)}
+                checked={tempSkills.includes(skill)}
+                onChange={() => handleCheckboxChange(skill)}
                 className="accent-purple-500 scale-110"
               />
               <label htmlFor={skill} className="flex items-center gap-2 cursor-pointer">
@@ -79,7 +92,7 @@ const SideBar = ({ filters, onFilterChange }) => {
       </section>
 
       {/* Age Range */}
-      <section >
+      <section className="mb-6">
         <h2 className="text-white text-lg font-medium mb-4 flex items-center gap-2">
           <GiAges className="text-purple-400 text-xl" />
           Age
@@ -119,6 +132,14 @@ const SideBar = ({ filters, onFilterChange }) => {
           )}
         />
       </section>
+
+      {/* Confirm Button */}
+      <button
+        onClick={applyFilters}
+        className="mt-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded transition-all"
+      >
+        Apply Filters
+      </button>
     </div>
   );
 };
