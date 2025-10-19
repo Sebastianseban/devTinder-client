@@ -3,7 +3,7 @@ import React from "react";
 import { IoLocationSharp } from "react-icons/io5";
 
 export default function FeedCard({ dev }) {
-  console.log(dev)
+
   return (
     <div className="relative max-w-md mx-auto rounded-[2.2rem] overflow-hidden shadow-2xl bg-gradient-to-tr from-[#232949] via-[#282f57] to-[#2b315c] hover:scale-[1.025] transition group">
       {/* Image Section */}

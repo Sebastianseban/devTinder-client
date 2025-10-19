@@ -24,7 +24,14 @@ const FeedPage = () => {
     });
   };
 
-  if (isLoading) return <div>Loading developers...</div>;
+
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0A0A0F]">
+        <div className="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+
   if (isError) return <div>Failed to load feed.</div>;
 
   return (
