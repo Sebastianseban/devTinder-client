@@ -1,15 +1,18 @@
-
 import React, { useState } from "react";
 import SwipeCard from "../../components/feed/SwipeCard";
 import SideBar from "../../components/feed/SideBar";
 import { useFeed } from "../../hooks/useFeed";
 import { useSendConnection } from "../../hooks/useConnectionRequest";
+import { BsStar } from "react-icons/bs";
+import { FaFilter } from "react-icons/fa";
 
 const FeedPage = () => {
   const [filters, setFilters] = useState({
     skills: [],
     age: undefined, // don't send age until user applies
   });
+
+  const [openSideBar,setOpenSideBar] = useState(false)
 
   const { data: developers = [], isLoading, isError } = useFeed(filters);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,7 +27,6 @@ const FeedPage = () => {
     });
   };
 
-
   if (isLoading)
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0A0A0F]">
@@ -36,8 +38,17 @@ const FeedPage = () => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E]">
-      <SideBar filters={filters} onFilterChange={handleFilterChange} />
+    {openSideBar &&  <SideBar filters={filters} onFilterChange={handleFilterChange} />}
       <div className="flex-1 flex flex-col items-center py-10">
+        <button
+        onClick={() => setOpenSideBar(true)}
+          type="button"
+          className="flex items-center gap-2 px-5 py-2 rounded-md bg-gradient-to-r from-indigo-700 to-purple-700 text-white font-semibold tracking-wide shadow-md transition-transform duration-200 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          <FaFilter className="text-lg text-purple-300" />
+          <span className="text-base uppercase">Apply Filters</span>
+        </button>
+
         <div className="relative w-full max-w-md h-[600px] flex items-center justify-center">
           {developers
             .slice(currentIndex, currentIndex + 3)
