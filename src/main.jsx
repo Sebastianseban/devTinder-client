@@ -18,6 +18,7 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import GitHubCallback from "./pages/auth/GitHubCallback.jsx";
 import { Toaster } from "react-hot-toast";
 import PublicRoute from "./routes/PublicRoute.jsx";
+import ChatPage from "./pages/chat/ChatPage.jsx";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <FeedPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "chat",
+        element: (
+          <ProtectedRoute>
+            <ChatPage/>
           </ProtectedRoute>
         ),
       },
